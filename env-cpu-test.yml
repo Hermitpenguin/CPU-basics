@@ -2,8 +2,9 @@ name: test-env
 channels:
   - conda-forge
 dependencies:
-  - python3==3.10
+  - python
   - cosapp
   - numpy
   - scipy
   - matplotlib
+  - plotly

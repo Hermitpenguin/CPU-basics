@@ -8,14 +8,15 @@ class Controller(System):
     #     super().__init__(name,*arg)
         
     def setup(self):
-        
+
         self.add_inward('Tcpu', 292., unit='K')
-        self.add_outward('Vfan', 0., unit='V')
+        self.add_outward('Vfan', 0., unit='W')
 
         # self.add_input(self.port_in,'p_in')
         # self.add_output(self.port_out,'p_out')
 
     def compute(self):
+        self.Vfan = 0.
         if self.Tcpu > 313.:
             self.Vfan = 6. # Volts
         if self.Tcpu > 333.:

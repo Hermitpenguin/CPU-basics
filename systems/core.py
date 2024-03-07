@@ -9,9 +9,13 @@ class Core(System):
         
     def setup(self):
         self.add_inward('vcpu', 0., unit='V')
+        self.add_inward('Area', 0.0025, unit='m**2')
+        self.add_inward('emissivity', 0.2)
         self.add_inward('spec_heat', 710., unit='J/kg/K', desc='Silicon specific heat')
         self.add_inward('mass', 0.06, unit='kg')
-        self.add_inward('Troom', 293.)
+        self.add_inward('Troom', 293., unit='K')
+        self.add_inward('T', 292., unit='K')
+        self.add_inward('ext_cooling', 1., unit='W')
 
         self.add_outward('wcpu', unit='W')
         self.add_outward('dT', unit='K/s')
@@ -24,5 +28,7 @@ class Core(System):
     def compute(self):
         self.wcpu = 100*self.vcpu
         boltzmann_constant = 5.670373E-8
-        self.dT = self.wcpu/(self.spec_heat*self.mass) - 0.05*0.05*boltzmann_constant*0.2*(self.T**4-self.Troom**4)/(self.spec_heat*self.mass)
+        cooling = self.ext_cooling*(self.T-self.Troom)*0.05
+        # print(cooling)
+        self.dT = (self.wcpu-cooling)/(self.spec_heat*self.mass)# - self.Area*boltzmann_constant*self.emissivity*(self.T**4-self.Troom**4)/(self.spec_heat*self.mass)
 

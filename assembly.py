@@ -1,4 +1,4 @@
-from systems import Core, Controller
+from systems import Core, Controller, Fan, HeatSink
 from cosapp.base import System, Port
 from cosapp.drivers import RungeKutta
 from cosapp.recorders import DataFrameRecorder
@@ -10,13 +10,14 @@ class Assembly(System):
         
         self.add_child(Core( 'cpu_core' ))
         self.add_child(Controller( 'fan_controller' ))
+        self.add_child(Fan( 'fan' ))
+        self.add_child(HeatSink( 'heatsink' ))
 
-        # self.connect(self.cpu_core,self.fan_controller,{'ext_cooling':'Vfan'})
-        # self.connect(self.fan_controller,self.cpu_core,{'Vfan': 'ext_cooling'})
         self.connect(self.cpu_core, self.fan_controller, {'T': 'Tcpu'})
-        
+        self.connect(self.fan_controller,self.fan, {'Vfan':'Vfan'})
+        self.connect(self.fan, self.heatsink, {'airspeed'})
+        self.connect(self.cpu_core,self.heatsink,{'T':'Tcpu'})
+        self.connect(self.heatsink, self.cpu_core, {'cooling_power'})
 
     def compute(self):
-        # self.cpu_core.ext_cooling = self.fan_controller.Vfan
-        # print(self.fan_controller.Vfan)
-        pass
+        self.cpu_core.cooling_power = self.heatsink.cooling_power

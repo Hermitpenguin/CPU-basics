@@ -15,7 +15,7 @@ class Core(System):
         self.add_inward('mass', 0.06, unit='kg')
         self.add_inward('Troom', 293., unit='K')
         self.add_inward('T', 292., unit='K')
-        self.add_inward('ext_cooling', 1., unit='W')
+        self.add_inward('cooling_power', 0., unit='W')
 
         self.add_outward('wcpu', unit='W')
         self.add_outward('dT', unit='K/s')
@@ -28,7 +28,6 @@ class Core(System):
     def compute(self):
         self.wcpu = 100*self.vcpu
         boltzmann_constant = 5.670373E-8
-        cooling = self.ext_cooling*(self.T-self.Troom)*0.05
-        # print(cooling)
-        self.dT = (self.wcpu-cooling)/(self.spec_heat*self.mass)# - self.Area*boltzmann_constant*self.emissivity*(self.T**4-self.Troom**4)/(self.spec_heat*self.mass)
-
+        cooling = self.cooling_power*1.0
+        self.dT = (self.wcpu-cooling)/(self.spec_heat*self.mass)
+        # self.dT = self.dT - self.area*boltzmann_constant*self.emissivity*(self.T**4-self.Troom**4)/(self.spec_heat*self.mass)

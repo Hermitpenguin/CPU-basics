@@ -1,6 +1,7 @@
 from systems import Core, Controller
 from cosapp.drivers import RungeKutta
 from cosapp.recorders import DataFrameRecorder
+from cosapp.drivers import Optimizer, NonLinearSolver
 import numpy as np
 import matplotlib.pylab as plt
 from assembly import Assembly
@@ -10,7 +11,7 @@ from assembly import Assembly
 CPU = Assembly('CPU')
 
 CPU_driver = CPU.add_driver(RungeKutta(order=4))
-CPU_driver.time_interval = (0,1000)
+CPU_driver.time_interval = (0,500)
 CPU_driver.dt = 0.05
 
 # Initial conditions
@@ -20,21 +21,39 @@ CPU.cpu_core.Troom = T0
 CPU.heatsink.T = T0
 CPU.heatsink.Troom = T0
 CPU.heatsink.Tcpu = T0
-CPU.cpu_core.vcpu = .2
-CPU_driver.add_recorder(DataFrameRecorder(includes=['cpu_core.T', 'cpu_core.dT', 'heatsink.cooling_power', 'heatsink.T']),period=1.)
+CPU.cpu_core.vcpu = 5.
+CPU_driver.add_recorder(DataFrameRecorder(includes=['cpu_core.T', 'heatsink.T', 'fan.Vfan']),period=1.)
 CPU_driver.set_scenario(init = {'cpu_core.T': T0, 'heatsink.T': T0})
+
+
+optim = CPU.add_driver(Optimizer('optim', method='SLSQP', tol=1e-12, verbose=1))
+optim.add_child(NonLinearSolver('solver', tol=1e-12))  # to solve cyclic dependencies
+
+# optim.add_unknown('a', lower_bound=0, upper_bound=1)
+optim.add_unknown('heatsink.area', lower_bound=0.0001, upper_bound=0.5)
+optim.set_minimum('heatsink.area**2')
+
+optim.add_constraints([
+    'cpu_core.T<354'])
+
+print(dict(CPU.inwards.items()))
+print(CPU['heatsink.area'])
 CPU.run_drivers()
+
+# print(CPU.inwards.items())
 
 data = CPU_driver.recorder.export_data()
 
-print(data)
+# print(data)
 
 time = np.asarray(data['time'])
 temp = np.asarray(data['cpu_core.T'])
-Vfan = np.asarray(data['heatsink.cooling_power'])
+Vfan = np.asarray(data['fan.Vfan'])
+hstemp = np.asarray(data['heatsink.T'])
 
 fig, ax = plt.subplots(1,2)
 ax[0].plot(time, temp,'.')
+ax[0].plot(time, hstemp,'.')
 ax[0].set_title('CPU temperature')
 ax[0].set_xlabel('time (s)')
 ax[0].set_ylabel('Temperature (K)')

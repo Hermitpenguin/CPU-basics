@@ -17,7 +17,7 @@ class Assembly(System):
         self.connect(self.fan_controller,self.fan, {'Vfan':'Vfan'})
         self.connect(self.fan, self.heatsink, {'airspeed'})
         self.connect(self.cpu_core,self.heatsink,{'T':'Tcpu'})
-        self.connect(self.heatsink, self.cpu_core, {'cooling_power'})
+        self.connect(self.cpu_core, self.heatsink, {'cooling_power'})
 
     def compute(self):
         self.cpu_core.cooling_power = self.heatsink.cooling_power

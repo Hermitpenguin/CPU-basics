@@ -17,6 +17,6 @@ class Assembly(System):
         
 
     def compute(self):
-        self.cpu_core.ext_cooling = self.fan_controller.Vfan
+        # self.cpu_core.ext_cooling = self.fan_controller.Vfan
         # print(self.fan_controller.Vfan)
         pass

@@ -2,13 +2,13 @@ from cosapp.base import System, Port
 
 class Core(System):
 
-    def __init__(self, name,*arg):
-        self.port_in = Port
-        self.port_out = Port
-        super().__init__(name,*arg)
+    # def __init__(self, name,*arg):
+    #     self.port_in = Port
+    #     self.port_out = Port
+    #     super().__init__(name,*arg)
         
     def setup(self):
-        self.add_inward('vcpu', unit='V')
+        self.add_inward('vcpu', 0., unit='V')
         self.add_inward('spec_heat', 710., unit='J/kg/K', desc='Silicon specific heat')
         self.add_inward('mass', 0.06, unit='kg')
         self.add_inward('Troom', 293.)
@@ -18,8 +18,8 @@ class Core(System):
 
         self.add_transient('T', der='dT')
 
-        # self.add_input(self.port_in,'p_in')
-        # self.add_output(self.port_out,'p_out')
+        # self.add_input(Port1,'p_in')
+        # self.add_output(Port1,'p_out')
 
     def compute(self):
         self.wcpu = 100*self.vcpu

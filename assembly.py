@@ -8,10 +8,11 @@ import matplotlib.pylab as plt
 class Assembly(System):
     def setup(self):
         
-        self.add_child(Core( name = 'cpu_core' ))
-        self.add_child(Controller( name = 'fan_controller' ))
+        self.add_child(Core( 'cpu_core' ))
+        self.add_child(Controller( 'fan_controller' ))
+
+        self.connect(self.cpu_core, self.fan_controller, {'T' : 'Tcpu'})
 
     def compute(self):
-
         pass
     

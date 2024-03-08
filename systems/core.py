@@ -18,8 +18,9 @@ class Core(System):
         self.add_inward('cooling_power', 0., unit='W')
 
         self.add_outward('wcpu', unit='W')
+        self.add_outward('Tout', unit='K')
         self.add_outward('dT', unit='K/s')
-
+        
         self.add_transient('T', der='dT')
 
         # self.add_input(Port1,'p_in')
@@ -29,5 +30,6 @@ class Core(System):
         self.wcpu = 100*self.vcpu
         boltzmann_constant = 5.670373E-8
         cooling = self.cooling_power*1.0
+        self.Tout = self.T
         self.dT = (self.wcpu-cooling)/(self.spec_heat*self.mass)
         # self.dT = self.dT - self.area*boltzmann_constant*self.emissivity*(self.T**4-self.Troom**4)/(self.spec_heat*self.mass)

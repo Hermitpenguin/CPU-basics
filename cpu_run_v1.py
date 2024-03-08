@@ -21,30 +21,33 @@ CPU.cpu_core.Troom = T0
 CPU.heatsink.T = T0
 CPU.heatsink.Troom = T0
 CPU.heatsink.Tcpu = T0
+CPU.fan_controller.Tcpu = T0
 CPU.cpu_core.vcpu = 5.
-CPU_driver.add_recorder(DataFrameRecorder(includes=['cpu_core.T', 'heatsink.T', 'fan.Vfan']),period=1.)
+CPU_driver.add_recorder(DataFrameRecorder(includes=['cpu_core.T', 'heatsink.T', 'fan.Vfan','cpu_core.cooling_power']),period=1.)
 CPU_driver.set_scenario(init = {'cpu_core.T': T0, 'heatsink.T': T0})
 
 
-optim = CPU.add_driver(Optimizer('optim', method='SLSQP', tol=1e-12, verbose=1))
-optim.add_child(NonLinearSolver('solver', tol=1e-12))  # to solve cyclic dependencies
+# optim = CPU.add_driver(Optimizer('optim', method='SLSQP', tol=1e-12, verbose=1))
+# optim.add_child(NonLinearSolver('solver', tol=1e-12))  # to solve cyclic dependencies
 
-# optim.add_unknown('a', lower_bound=0, upper_bound=1)
-optim.add_unknown('heatsink.area', lower_bound=0.0001, upper_bound=0.5)
-optim.set_minimum('heatsink.area**2')
+# # optim.add_unknown('a', lower_bound=0, upper_bound=1)
+# optim.add_unknown('heatsink.area', lower_bound=0.0001, upper_bound=0.5)
+# optim.set_minimum('heatsink.area**2')
 
-optim.add_constraints([
-    'cpu_core.T<354'])
+# optim.add_constraints([
+#     'fan_controller.tempcheck<1'])
 
-print(dict(CPU.inwards.items()))
-print(CPU['heatsink.area'])
+
 CPU.run_drivers()
+
+for varname, value in CPU.inwards.items():
+    print(varname, value)
 
 # print(CPU.inwards.items())
 
 data = CPU_driver.recorder.export_data()
 
-# print(data)
+print(data)
 
 time = np.asarray(data['time'])
 temp = np.asarray(data['cpu_core.T'])

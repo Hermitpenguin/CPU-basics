@@ -29,7 +29,6 @@ class Core(System):
     def compute(self):
         self.wcpu = 100*self.vcpu
         boltzmann_constant = 5.670373E-8
-        cooling = self.cooling_power*1.0
         self.Tout = self.T
-        self.dT = (self.wcpu-cooling)/(self.spec_heat*self.mass)
+        self.dT = (self.wcpu-self.cooling_power)/(self.spec_heat*self.mass)
         # self.dT = self.dT - self.area*boltzmann_constant*self.emissivity*(self.T**4-self.Troom**4)/(self.spec_heat*self.mass)

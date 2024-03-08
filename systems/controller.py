@@ -8,7 +8,6 @@ class Controller(System):
         self.add_outward('Vfan', 0., unit='V')
         self.add_outward('tempcheck',0)
 
-
     def compute(self):
         self.Vfan = 0.
         if self.Tcpu > 333.:
@@ -18,5 +17,6 @@ class Controller(System):
         
         if self.Tcpu > 354.:
             self.tempcheck = self.tempcheck + 1
+            # print(self.tempcheck)
 
         

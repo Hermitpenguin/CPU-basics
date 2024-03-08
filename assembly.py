@@ -11,14 +11,15 @@ class Assembly(System):
         self.add_child(Core( 'cpu_core' ))
         self.add_child(Controller( 'fan_controller' ))
         self.add_child(Fan( 'fan' ))
-        self.add_child(HeatSink( 'heatsink' ))#, pulling=['cooling_power'])
+        self.add_child(HeatSink( 'heatsink' ))
+
 
         self.connect(self.cpu_core, self.fan_controller, {'Tout': 'Tcpu'})
-        self.connect(self.fan_controller,self.fan, {'Vfan'})
-        self.connect(self.fan, self.heatsink, {'airspeed'})
-        self.connect(self.cpu_core,self.heatsink,{'Tout':'Tcpu'})
-        self.connect(self.heatsink, self.cpu_core, {'cooling_power'})
-        
-    def compute(self):
-        # self.cpu_core.cooling_power = self.heatsink.cooling_power
-        pass
+        self.connect(self.cpu_core, self.heatsink,{'Tout':'Tcpu'})
+        self.connect(self.fan_controller,self.fan, ['Vfan'])
+        self.connect(self.fan, self.heatsink, ['airspeed'])
+        self.connect(self.heatsink.outwards, self.cpu_core.inwards, ['cooling_power'])
+
+    # def compute(self):
+    #     self.cpu_core.cooling_power = self.heatsink.cooling_power
+    #     pass

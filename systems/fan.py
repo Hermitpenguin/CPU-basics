@@ -12,7 +12,7 @@ class Fan(System):
         # 100 CFM = 0.05 m**3/s
         pi = 3.14159
         area = pi*(self.diameter/2)**2
-        self.airspeed = (0.05/12)*self.Vfan/area
+        self.airspeed = (0.05/10)*self.Vfan/area
         
         
 

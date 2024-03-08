@@ -4,9 +4,8 @@ class HeatSink(System):
 
     def setup(self):
 
-        
         self.add_inward('spec_heat', 895., unit='J/kg/K', desc='Aluminium specific heat')
-        self.add_inward('area', unit='m**2')
+        self.add_inward('area', 0.4, unit='m**2')
         self.add_inward('volume', 0.185, unit='m**3')
         self.add_inward('mass', 0.5, unit='kg')
         self.add_inward('emissivity', 0.2)
@@ -20,7 +19,7 @@ class HeatSink(System):
         self.add_inward('Troom', 292., unit='K')
         self.add_inward('T', 291., unit='K')
 
-        self.add_outward('cooling_power',0, unit='W')
+        self.add_outward('cooling_power', 0.0, unit='W')
         self.add_outward('dT',0., unit='K/s')
 
         self.add_transient('T', der='dT')
